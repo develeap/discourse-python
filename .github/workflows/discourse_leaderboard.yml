@@ -1,29 +1,33 @@
 name: Dicsourse Leaderboard
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: 
-  workflow_dispatch:
-    inputs:
-      from_date: ''
-        description: 'Start date from which to quary topics (e.g 2023-01-01)'
-        required: true
-        default: ''
-      to_date: ''
-        description: 'End date untill which to quart topics (e.g 2023-04-01)'
-        required: true
-        default: ''
-      logLevel:
-        description: 'Log level'     
-        required: false
-        default: 'INFO'
+on:
+  push:
+    branches: [create_leaderboard_png_github_actions] # [$GITHUB_REF_NAME]
+  # workflow_dispatch:
+  #   inputs:
+  #     from_date:
+  #       description: 'Start date from which to quary topics (e.g 2023-01-01)'
+  #       required: true
+  #       default: ''
+  #     to_date:
+  #       description: 'End date until which to quary topics (e.g 2023-04-01)'
+  #       required: true
+  #       default: ''
+  #     logLevel:
+  #       description: 'Log level'     
+  #       required: false
+  #       default: 'INFO'
 jobs:
   leaderBoardArtifact:
     runs-on: python:3.9.16-slim
     steps:
+      # - name: Run python install requirments
+      #   run: pip install -r requirments.txt
       - name: Run python main.py in docker container
         run: python main.py
-      - name: Archive png file
-        uses: actions/upload-artifact@v3
-        with:
-          name: png artifact
-          path: discourse_leaderboard.png
-          retention-days: 5
+      # - name: Archive png file
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: png artifact
+      #     path: discourse_leaderboard.png
+      #     retention-days: 5
