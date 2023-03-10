@@ -116,6 +116,7 @@ class discourse_leaderboard():
         print(f"And the winners are:")
         self.SORTED_USERS_POINTS = dict(sorted(user_points.items(), key=lambda item: item[1], reverse=True))
         tie_breaker, max_posts = self.tie_breaker()
+        text = []
         for i, user in enumerate(self.SORTED_USERS_POINTS_LIST):
             addition = ''
             user_name = list(user.keys())[0]
@@ -134,5 +135,6 @@ class discourse_leaderboard():
                     text_color = bcolors.CYAN
                 else: 
                     text_color = bcolors.WHITE
-            print(text_color + f"{i+1:3}. {user_name:.<15}...{points} {addition}" + bcolors.ENDC)
-
+            text.append(f"{i+1:3}. {user_name:.<15}...{points} {addition}")
+            # print(text_color + f"{i+1:3}. {user_name:.<15}...{points} {addition}" + bcolors.ENDC)
+        print(text)
