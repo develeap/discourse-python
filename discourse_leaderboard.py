@@ -122,7 +122,7 @@ class discourse_leaderboard():
                 tie_breaker = "Tie-breaker:" in text_list[index]
             draw.text((40,45*index+20), text_list[index], font=fnt, fill=self.fnt_color(index, tie_breaker))
 
-        img.save('leaderboard.png')
+        img.save('discourse_leaderboard.png')
 
     def get_leaderboard(self):
         user_points = {}
