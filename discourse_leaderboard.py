@@ -1,3 +1,4 @@
+from PIL import Image, ImageDraw, ImageFont
 import requests
 import os
 from datetime import datetime
@@ -96,6 +97,33 @@ class discourse_leaderboard():
             points = 10
         return {solution_user: points}
 
+    def fnt_color(self, i, tie_breaker):
+        if i < 3:
+            if tie_breaker:
+                return (255, 255, 0)
+            else:
+                return (0, 255, 0)
+        else:
+            return (255, 255, 255)
+
+    def list_to_png(self, text_list):
+        img_hight = len(text_list)*45+20*2
+        img_width = 1000
+        img_background = (0, 0, 0) # black # (255, 255, 255) # white #
+        fnt_size = 35
+
+        img = Image.new('RGB', (img_width, img_hight), color=img_background)
+        draw = ImageDraw.Draw(img)
+        fnt = ImageFont.truetype('./monaco.ttf', fnt_size) # chars are differnat sizes
+
+        tie_breaker = False
+        for index, line in enumerate(text_list):
+            if index == 2:
+                tie_breaker = "Tie-breaker:" in text_list[index]
+            draw.text((40,45*index+20), text_list[index], font=fnt, fill=self.fnt_color(index, tie_breaker))
+
+        img.save('leaderboard.png')
+
     def get_leaderboard(self):
         user_points = {}
         topic_id_list = self.get_topics()
@@ -116,7 +144,7 @@ class discourse_leaderboard():
         print(f"And the winners are:")
         self.SORTED_USERS_POINTS = dict(sorted(user_points.items(), key=lambda item: item[1], reverse=True))
         tie_breaker, max_posts = self.tie_breaker()
-        text = []
+        text_list = []
         for i, user in enumerate(self.SORTED_USERS_POINTS_LIST):
             addition = ''
             user_name = list(user.keys())[0]
@@ -135,6 +163,7 @@ class discourse_leaderboard():
                     text_color = bcolors.CYAN
                 else: 
                     text_color = bcolors.WHITE
-            text.append(f"{i+1:3}. {user_name:.<15}...{points} {addition}")
+            text_list.append(f"{i+1:3}. {user_name:.<15}...{points} {addition}")
             # print(text_color + f"{i+1:3}. {user_name:.<15}...{points} {addition}" + bcolors.ENDC)
-        print(text)
+            # print(text_list)
+        self.list_to_png(text_list)
