@@ -10,11 +10,11 @@ class mylist(list):
         return super(mylist,self).__contains__(other.lower())
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description = 'Script to quary discourse topics and export resaults as .png file')
+    parser = argparse.ArgumentParser(description = 'Script to quary Discourse topics and export resaults as .png file')
     parser.add_argument("-u", "--user",  dest='user', required=True,
-                                help='Username used to authenticate discourse')
+                                help='Username used to authenticate Discourse')
     parser.add_argument("-t", "--token",  dest='token', required=True,
-                                help='Token used to authenticate discourse')
+                                help='Token used to authenticate Discourse')
     parser.add_argument("-s", "--start_date", dest='start_date', required=True, default="2023-01-01",
                                 help='Start date from which to quary topics (e.g 2023-01-01)')
     parser.add_argument("-e", "--end_date",  dest='end_date', required=True, default="2023-01-11",
