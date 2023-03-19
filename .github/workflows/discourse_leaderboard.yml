@@ -23,6 +23,9 @@ jobs:
     # runs-on: python:3.9.16-slim
     steps:
       - uses: actions/checkout@v3
+      - name: see local files
+        run: |
+          ls -la
       - name: Set up Python 3.9
         uses: actions/setup-python@v3
         with:
