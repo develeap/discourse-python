@@ -5,10 +5,6 @@ on:
     branches: [create_leaderboard_png_github_actions] # [$GITHUB_REF_NAME]
   workflow_dispatch:
     inputs:
-      user:
-        description: 'Username used to authenticate Discourse'
-        required: true
-        default: ''
       from_date:
         description: 'Start date from which to quary topics (e.g 2023-01-01)'
         required: true
@@ -23,6 +19,8 @@ on:
         default: 'INFO'
 jobs:
   leaderBoardArtifact:
+    env:
+      DISCOURSE_USER: 'shaked.dotan'
     runs-on: ubuntu-latest
     # runs-on: python:3.9.16-slim
     steps:
@@ -36,7 +34,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run python main.py
-        run: python main.py --from ${{ github.event.inputs.from_date }} --to ${{ github.event.inputs.to_date }}
+        run: python main.py --user ${{ env.DISCOURSE_USER }} --token ${{ secrets.DISCOURSE_TOKEN }} --from ${{ github.event.inputs.from_date }} --to ${{ github.event.inputs.to_date }}
       - name: Archive png file
         uses: actions/upload-artifact@v3
         with:
