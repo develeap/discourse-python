@@ -19,7 +19,8 @@ on:
   #       default: 'INFO'
 jobs:
   leaderBoardArtifact:
-    runs-on: python:3.9.16-slim
+    runs-on: ubuntu-latest
+    # runs-on: python:3.9.16-slim
     steps:
       # - name: Run python install requirments
       #   run: pip install -r requirments.txt
