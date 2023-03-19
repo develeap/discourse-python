@@ -1,9 +1,10 @@
-from PIL import Image, ImageDraw, ImageFont
 import requests
 import os
 from datetime import datetime
 import logging as log
 import json
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 
 class bcolors:
     HEADER = '\033[95m'
@@ -18,6 +19,15 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     ENDC = '\033[0m'
+class rgb_colors:
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    YELLOW = (255, 255, 0)
+    PURPLE = (255,0,255)
+    CYAN = (0,255,255)
+    WHITE = (0, 0, 0)
+    BLACK = (255, 255, 255)
 
 class discourse_leaderboard():
     def __init__(self, discourse_url, discourse_user, discourse_read_api_token, before_date, after_date):
@@ -34,6 +44,8 @@ class discourse_leaderboard():
         self.SEARCH_RESPONSE_JSON = []
         self.SORTED_USERS_POINTS = {}
         self.SORTED_USERS_POINTS_LIST = []
+        self.IS_TIE_BREAkER = False
+        self.IMAGE_DARK_MODE = True
 
     def get_user_posts(self, user) -> int:
         user_posts = {}
@@ -99,37 +111,42 @@ class discourse_leaderboard():
 
     def fnt_color(self, i, tie_breaker):
         if i < 3:
-            if tie_breaker:
-                return (255, 255, 0)
+            if self.IS_TIE_BREAkER:
+                return rgb_colors.YELLOW
             else:
-                return (0, 255, 0)
-        else:
-            return (255, 255, 255)
+                return rgb_colors.GREEN
+        if self.IMAGE_DARK_MODE:
+            return rgb_colors.BLACK
+        return rgb_colors.WHITE
 
     def list_to_png(self, text_list):
-        img_hight = len(text_list)*45+20*2
-        img_width = 1000
-        img_background = (0, 0, 0) # black # (255, 255, 255) # white #
+        img_hight = len(text_list)*45+30*2
+        img_width = 650
+        img_background = rgb_colors.WHITE if (self.IMAGE_DARK_MODE) else rgb_colors.BLACK 
         fnt_size = 35
-
+        
+        with open('Monaco.ttf', 'rb') as f:
+            bytes_font = BytesIO(f.read())
+        fnt = ImageFont.truetype(bytes_font, fnt_size)
         img = Image.new('RGB', (img_width, img_hight), color=img_background)
         draw = ImageDraw.Draw(img)
-        fnt = ImageFont.truetype('./monaco.ttf', fnt_size) # chars are differnat sizes
-
-        tie_breaker = False
+        tie_breaker_line = False
+        
         for index, line in enumerate(text_list):
             if index == 2:
-                tie_breaker = "Tie-breaker:" in text_list[index]
-            draw.text((40,45*index+20), text_list[index], font=fnt, fill=self.fnt_color(index, tie_breaker))
-
-        img.save('leaderboard.png')
+                if "Tie-breaker:" in text_list[index]:
+                    tie_breaker_line = True
+                    img_width = 1000
+            draw.text((40,45*index+30), text_list[index], font=fnt, fill=self.fnt_color(index, tie_breaker_line))
+        img.save('discourse_leaderboard.png')
 
     def get_leaderboard(self):
         user_points = {}
         topic_id_list = self.get_topics()
         dots = ["", ".", "..", "...", "...."]
+        print("Fetching results:")
         for i, topic_id in enumerate(topic_id_list):
-            print(f"Fetching results{dots[i%len(dots)]}    ", end='\r')
+            # print(f"Fetching results{dots[i%len(dots)]}    ", end='\r') # github issues
             temp_dict = self.get_user_points_by_topic_id(topic_id)
             if temp_dict != {}:
                 temp_key = list(temp_dict.keys())[0]
@@ -143,7 +160,7 @@ class discourse_leaderboard():
         log.info(f"Done \n\n")
         print(f"And the winners are:")
         self.SORTED_USERS_POINTS = dict(sorted(user_points.items(), key=lambda item: item[1], reverse=True))
-        tie_breaker, max_posts = self.tie_breaker()
+        self.IS_TIE_BREAkER, max_posts = self.tie_breaker()
         text_list = []
         for i, user in enumerate(self.SORTED_USERS_POINTS_LIST):
             addition = ''
@@ -152,18 +169,17 @@ class discourse_leaderboard():
             if i < 2:
                 text_color = bcolors.GREEN
             elif i == 2:
-                if tie_breaker:
+                if self.IS_TIE_BREAkER:
                     addition = f"Tie-breaker: Won by most posts ({max_posts})! \n    ----------"
                     text_color = bcolors.YELLOW
                 else:
                     addition = "\n"
                     text_color = bcolors.GREEN
             else:
-                if tie_breaker and points == 35:
+                if self.IS_TIE_BREAkER and points == 35:
                     text_color = bcolors.CYAN
                 else: 
                     text_color = bcolors.WHITE
             text_list.append(f"{i+1:3}. {user_name:.<15}...{points} {addition}")
             # print(text_color + f"{i+1:3}. {user_name:.<15}...{points} {addition}" + bcolors.ENDC)
-            # print(text_list)
         self.list_to_png(text_list)
