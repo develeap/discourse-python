@@ -1,0 +1,16 @@
+name: Discourse Leaderboard
+run-name: Hello world from github actions
+on:
+  workflow_dispatch:
+    inputs:
+      user:
+        description: 'Username used to authenticate Discourse'
+        required: true
+        default: ''
+jobs:
+  leaderBoardArtifact:
+    runs-on: ubuntu-latest
+    steps:
+      - name: say hello
+        run: |
+          echo 'hello world ${{ github.event.input.user }}'
