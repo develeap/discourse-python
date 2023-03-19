@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 from random import randint
 
 message = [' 1. shaked.dotan - 20',
@@ -29,9 +30,12 @@ img_width = 1000
 img_background = (0, 0, 0) # black # (255, 255, 255) # white #
 fnt_size = 35
 
+with open('./monaco.ttf', 'rb') as f: # chars are differnat sizes
+    bytes_font = BytesIO(f.read())
+fnt = ImageFont.truetype(bytes_font, fnt_size) # chars are differnat sizes
+
 img = Image.new('RGB', (img_width, img_hight), color=img_background)
 draw = ImageDraw.Draw(img)
-fnt = ImageFont.truetype('./monaco.ttf', fnt_size) # chars are differnat sizes
 
 tie_breaker = False
 for index, line in enumerate(message):
