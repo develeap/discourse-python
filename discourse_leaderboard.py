@@ -115,7 +115,7 @@ class discourse_leaderboard():
         fnt_size = 35
         tie_breaker = False
 
-        with open('monaco.ttf', 'rb') as f:
+        with open('Monaco.ttf', 'rb') as f:
             bytes_font = BytesIO(f.read())
         fnt = ImageFont.truetype(bytes_font, fnt_size)
 
