@@ -1,5 +1,5 @@
 name: Dicsourse Leaderboard
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} is running Discourse Leaderboard 🚀
 on:
   workflow_dispatch:
     inputs:
@@ -40,3 +40,4 @@ jobs:
           name: png artifact
           path: discourse_leaderboard.png
           retention-days: 5
+
