@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       from_date:
-        description: 'Start date from which to quary topics (YYYY-MM-DD)(e.g 2023-01-01)'
+        description: 'Start date from which to quary topics, `YYYY-MM-DD` format (e.g 2023-01-01)'
         required: true
         default: ''
       to_date:
-        description: 'End date until which to quary topics (YYYY-MM-DD)(e.g 2023-04-01)'
+        description: 'End date until which to quary topics, `YYYY-MM-DD` format (e.g 2023-04-01)'
         required: true
         default: ''
       logLevel:
