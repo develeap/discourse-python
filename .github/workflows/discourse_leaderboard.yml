@@ -33,7 +33,12 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run python main.py
-        run: python main.py --user ${{ env.DISCOURSE_USER }} --token ${{ secrets.DISCOURSE_TOKEN }} --start_date ${{ github.event.inputs.from_date }} --end_date ${{ github.event.inputs.to_date }}
+        run: |
+          python main.py
+          --user ${{ env.DISCOURSE_USER }}
+          --token ${{ secrets.DISCOURSE_TOKEN }}
+          --start_date ${{ github.event.inputs.from_date }}
+          --end_date ${{ github.event.inputs.to_date }}
       - name: Archive png file
         uses: actions/upload-artifact@v3
         with:
