@@ -1,4 +1,4 @@
-name: Dicsourse Leaderboard
+name: Discourse Leaderboard
 run-name: ${{ github.actor }} is running Discourse Leaderboard 🚀
 on:
   workflow_dispatch:
