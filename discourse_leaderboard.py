@@ -128,7 +128,7 @@ class discourse_leaderboard():
         with open('Monaco.ttf', 'rb') as f:
             bytes_font = BytesIO(f.read())
         if self.IS_TIE_BREAKER:
-            img_width = 1100
+            img_width = 1000
             # footnot_fnt = ImageFont.truetype(bytes_font, 15)
         else:
             img_width = 650
