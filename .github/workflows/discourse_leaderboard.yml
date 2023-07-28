@@ -12,9 +12,12 @@ on:
         required: true
         default: ''
       logLevel:
+        type: choice
         description: 'Log level'     
         required: false
-        default: 'INFO'
+        options: 
+        - info
+        - debug
 jobs:
   leaderBoardArtifact:
     env:
@@ -33,7 +36,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run python main.py
-        run: |
+        run: >
           python main.py
           --user ${{ env.DISCOURSE_USER }}
           --token ${{ secrets.DISCOURSE_TOKEN }}
