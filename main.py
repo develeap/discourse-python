@@ -31,9 +31,9 @@ if __name__ == "__main__":
 
     log.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
-    discourse = discourse_leaderboard(discourse_url = "https://develeap.discourse.group",
-                                      discourse_user = USER,
-                                      discourse_read_api_token = TOKEN,
-                                      after_date = START_DATE,
-                                      before_date = END_DATE)
+    discourse  =  discourse_leaderboard(discourse_url = "https://develeap.discourse.group",
+                                        discourse_user = USER,
+                                        discourse_read_api_token = TOKEN,
+                                        after_date = START_DATE,
+                                        before_date = END_DATE)
     discourse.get_leaderboard() # list most accepted answers by user
