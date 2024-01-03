@@ -58,6 +58,8 @@ class discourse_leaderboard():
         return len(non_topic_posts_ids)
 
     def tie_breaker(self) -> bool:
+        third_place_user = None
+        SORTED_USERS_POINTS_LIST = []
         tied_points = list(self.SORTED_USERS_POINTS.items())[2][1] # points of third place
         tied_users = { user:self.SORTED_USERS_POINTS[user] for user in list(self.SORTED_USERS_POINTS)[2:] if self.SORTED_USERS_POINTS[user] == tied_points }
         
@@ -98,7 +100,10 @@ class discourse_leaderboard():
         topic_response = requests.get(TOPIC_URL, headers = self.HEADERS); topic_response.raise_for_status()
         topic_response_json = topic_response.json()
         accepted_post_num = topic_response_json['accepted_answer']['post_number'] - 1
-        accepted_date = topic_response_json['post_stream']['posts'][accepted_post_num]['created_at'].split('T')[0]
+        try:
+            accepted_date = topic_response_json['post_stream']['posts'][accepted_post_num]['created_at'].split('T')[0]
+        except IndexError:
+            accepted_date = topic_response_json['post_stream']['posts'][len(topic_response_json['post_stream']['posts'])-1]['created_at'].split('T')[0]
         if datetime.strptime(accepted_date, "%Y-%m-%d") < datetime.strptime(self.AFTER_DATE, "%Y-%m-%d"):
             return {}
         topic_user = topic_response_json['post_stream']['posts'][0]['username']
